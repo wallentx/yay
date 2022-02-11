@@ -1,6 +1,7 @@
 package dep
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -151,7 +152,7 @@ func (dp *Pool) CheckConflicts(useAsk, noConfirm, noDeps bool) (stringset.MapStr
 	wg.Wait()
 
 	if len(innerConflicts) != 0 {
-		text.Errorln(gotext.Get("\nInner conflicts found:"))
+		text.Errorln(gotext.Get("Inner conflicts found:"))
 
 		for name, pkgs := range innerConflicts {
 			str := text.SprintError(name + ":")
@@ -166,7 +167,7 @@ func (dp *Pool) CheckConflicts(useAsk, noConfirm, noDeps bool) (stringset.MapStr
 	}
 
 	if len(conflicts) != 0 {
-		text.Errorln(gotext.Get("\nPackage conflicts found:"))
+		text.Errorln(gotext.Get("Package conflicts found:"))
 
 		for name, pkgs := range conflicts {
 			str := text.SprintError(gotext.Get("Installing %s will remove:", text.Cyan(name)))
@@ -193,7 +194,7 @@ func (dp *Pool) CheckConflicts(useAsk, noConfirm, noDeps bool) (stringset.MapStr
 	if len(conflicts) > 0 {
 		if !useAsk {
 			if noConfirm {
-				return nil, fmt.Errorf(gotext.Get("package conflicts can not be resolved with noconfirm, aborting"))
+				return nil, errors.New(gotext.Get("package conflicts can not be resolved with noconfirm, aborting"))
 			}
 
 			text.Errorln(gotext.Get("Conflicting packages will have to be confirmed manually"))
